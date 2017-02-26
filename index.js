@@ -1,7 +1,4 @@
 
-'万', '条' ，'筒'
-'东' '南' '西' '北' '中' '发'
-
 const map = {
   一万: 'c1w',
   二万: 'c2w',
@@ -12,7 +9,7 @@ const map = {
   七万: 'c7w',
   八万: 'c8w',
   九万: 'c9w',
-  
+
   一条: 'c1t',
   二条: 'c2t',
   三条: 'c3t',
@@ -41,7 +38,7 @@ const map = {
   中: 'zhong'
 }
 
-const matchedIndexs = (cards, playedCard) => myCards.reduce(
+const matchedIndexs = (cards, playedCard) => cards.reduce(
   (pre, cur, curIndex) => (
     cur === playedCard ? [...pre, curIndex] : pre
   ),
@@ -54,5 +51,73 @@ const gangBuGang = (cards, playedCard) => matchedIndexs(cards, playedCard).lengt
 
 const chiBuChi = (cards, playedCard) => {
 
+  const mapedPlayedCard = map[playedCard];
+
+  if (mapedPlayedCard[0] === 'c') {
+    const mappedCards = cards.map(card => map[card]);
+    
+    const filtered = mappedCards
+      .filter(card => card[0] === 'c' && card[2] === mapedPlayedCard[2]);
+
+    const digit = Number(mapedPlayedCard[1]);
+
+    return [
+      [digit + 1, digit - 1],
+      [digit - 1, digit - 2],
+      [digit + 1, digit + 2],
+    ].map(
+      arr => {
+        const [fir, sec] = arr;
+
+        const findedFir = filtered
+          .find(card => Number(card[1]) === fir);
+
+        const findedSec = filtered
+          .find(card => Number(card[1]) === sec);
+
+        const firIndex = mappedCards
+          .findIndex(val => val === findedFir)
+
+        const secIndex = mappedCards
+          .findIndex(val => val === findedSec)
+
+        return (firIndex !== -1 && secIndex !== -1) ?
+          [firIndex, secIndex] : undefined
+      }
+    ).filter(val => val);
+  } else {
+    return [];
+  }
+};
+
+const check = (array) => {
+  const maped = array.map(val => map[val]),
+    [a, b ,c] = maped;
+
+  if(a === b && b === c){
+    return '碰';
+  }
+
+  if (a[0] === 'c' && b[0] === 'c' && c[0] === 'c'){
+    const sorted = maped.map(val => Number(val[1]))
+    .sort((a, b) => a > b);
+
+    if (
+      sorted[0] + 1 === sorted[1] &&
+      sorted[1] + 1 === sorted[2]
+    ){
+      return '吃'
+    }
+  }
+
+}
+
+const hubuhu = (cards, playedCard) => {
 
 };
+
+exports.chiBuChi = chiBuChi;
+exports.pengBuPeng = pengBuPeng;
+exports.gangBuGang = gangBuGang;
+exports.hubuhu = hubuhu;
+exports.check = check;
